@@ -9,10 +9,10 @@ class Config:
     AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
     AWS_REGION_NAME = os.getenv('AWS_REGION_NAME')
     MONGO_URI = os.getenv('MONGO_URI')
-    MAIL_SERVER = 'smtp.gmail.com'  # Replace with your SMTP server
-    MAIL_PORT = 587
-    MAIL_USERNAME = 'ujjwala.dangat@gmail.com'
-    MAIL_PASSWORD = 'izwwjiewvtdovzsu'
-    MAIL_USE_TLS = True
-    MAIL_USE_SSL = False
+    MAIL_SERVER = os.getenv('MAIL_SERVER')
+    MAIL_PORT = os.getenv('MAIL_PORT')
+    MAIL_USERNAME = os.getenv('MAIL_USERNAME')
+    MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
+    MAIL_USE_TLS = os.getenv('MAIL_USE_TLS') == 'True'
+    MAIL_USE_SSL = os.getenv('MAIL_USE_SSL') == 'True'
 
