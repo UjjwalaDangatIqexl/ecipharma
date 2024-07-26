@@ -2,14 +2,15 @@ from app.services.aws_textract_service import analyze_document
 from app.services.mongodb_service import store_document_data, get_document_by_id as get_doc_by_id
 
 
-def process_document(file_path):
+def process_document(file_path, user_id):
     # Analyze the document using AWS Textract
     textract_response = analyze_document(file_path)
 
     # Process the response (you may need to adjust this based on your needs)
     document_data = {
         'file_path': file_path,
-        'textract_response': textract_response
+        'textract_response': textract_response,
+        'user_id': user_id
     }
 
     # Store the response in MongoDB

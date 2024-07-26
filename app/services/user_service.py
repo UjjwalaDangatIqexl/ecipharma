@@ -27,7 +27,7 @@ class UserService:
         # send_email_otp(email, otp)
         send_email_otp(email, otp)
 
-        return user, "OTP sent to email"
+        return user, {"message": "created user successfully", "success": True}
 
     @staticmethod
     def verify_otp(email, entered_otp):
@@ -35,7 +35,7 @@ class UserService:
         if user and user.otp == entered_otp:
             user.otp = "-1"  # Invalidate the OTP
             user.save_to_db()
-            return user, "OTP verified"
+            return user, {"message": "OTP verified", "success": True}
         return None, "Invalid OTP"
 
     @staticmethod
@@ -46,32 +46,28 @@ class UserService:
         if user and user.otp == "-1":  # Ensure OTP has been verified
             user.password = hashed_password
             user.save_to_db()
-            return user, "Password set successfully"
+            return user, {"message": "Password set successfully", "success": True}
         return None, "OTP verification required"
 
     def authenticate_user(email, password):
         user = User.find_by_email(email)
         if user:
-            logging.info(f"User {email} found. Checking password...")
-
             if user.check_password(password):
-                logging.info(f"User {email} authenticated successfully.")
-                return user, "Authentication successful"
+                return user, {"message": "Authentication successful", "success": True}
             else:
                 logging.warning(f"Password mismatch for user {email}.")
         else:
             logging.warning(f"User {email} not found.")
-        return None, "Invalid email or password"
+        return None, {"message": "Invalid email or password", "success": True}
 
     def change_password(email, current_password, new_password):
         user = User.find_by_email(email)
         if user:
             if user.check_password(current_password):
                 hashed_new_password = generate_password_hash(new_password, method='scrypt')
-                logging.info(f"Generated new hashed password: {hashed_new_password}")
                 user.password = hashed_new_password
                 user.save_to_db()
-                return user, "Password changed successfully"
+                return user, {"message": "Password changed successfully", "success": True}
             else:
-                return None, "Current password is incorrect"
-        return None, "User not found"
+                return None, {"message": "Current password is incorrect", "success": True}
+        return None, {"message": "User not found", "success": True}
