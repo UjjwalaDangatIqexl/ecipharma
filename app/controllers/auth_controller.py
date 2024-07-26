@@ -31,6 +31,7 @@ def signup():
     user, message = UserService.create_user(customer_name, first_name, last_name, email, mobile_number)
     if user:
         user_data = {
+            "id": user.id,
             "customer_name": user.customer_name,
             "first_name": user.first_name,
             "last_name": user.last_name,
