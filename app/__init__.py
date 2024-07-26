@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from flask_pymongo import PyMongo
 from flask_mail import Mail
 from utils.config_utils import Config
@@ -17,6 +18,7 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
+    CORS(app)
     global mongo
 
     mongo.init_app(app)
