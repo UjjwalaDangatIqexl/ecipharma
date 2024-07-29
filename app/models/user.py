@@ -5,7 +5,8 @@ import logging
 
 
 class User:
-    def __init__(self, customer_name, first_name, last_name, email, mobile_number, password=None, otp=None):
+    def __init__(self, customer_name, first_name, last_name, email, mobile_number, password=None, otp=None,
+                 refresh_token=None):
         self.customer_name = customer_name
         self.id = str(uuid.uuid4())
         self.first_name = first_name
@@ -14,6 +15,7 @@ class User:
         self.mobile_number = mobile_number
         self.password = password
         self.otp = otp
+        self.refresh_token = refresh_token
 
     def save_to_db(self):
         mongo = current_app.config['mongo']

@@ -1,19 +1,9 @@
+# app/auth/controllers.py
 from flask import Blueprint, request, jsonify
 from app.services.user_service import UserService
+from app.utils.response import create_response
 
 auth_bp = Blueprint('auth', __name__)
-
-
-def create_response(success, message, user=None):
-    response = {
-        "status": {
-            "message": message,
-            "success": success
-        }
-    }
-    if user:
-        response["user"] = user
-    return response
 
 
 @auth_bp.route('/signup', methods=['POST'])
@@ -78,14 +68,14 @@ def signin():
     email = data.get('email')
     password = data.get('password')
 
-    if not all([email, password]):
-        return jsonify(create_response(False, "Missing fields")), 400
+    if not email or not password:
+        return jsonify(create_response(False, "Email and password are required")), 400
 
-    user, message = UserService.authenticate_user(email, password)
-    if user:
-        user_data = {"name": user.first_name, "email": user.email}
-        return jsonify(create_response(True, message, user_data)), 200
-    return jsonify(create_response(False, message)), 401
+    auth_response = UserService.authenticate_user(email, password)
+    if auth_response["status"]["success"]:
+        return jsonify(auth_response), 200
+    else:
+        return jsonify(auth_response), 401
 
 
 @auth_bp.route('/change_password', methods=['POST'])
@@ -102,3 +92,18 @@ def change_password():
     if user:
         return jsonify(create_response(True, message)), 200
     return jsonify(create_response(False, message)), 400
+
+
+@auth_bp.route('/refresh', methods=['POST'])
+def refresh():
+    data = request.get_json()
+    refresh_token = data.get('refresh_token')
+
+    if not refresh_token:
+        return jsonify(create_response(False, "Missing refresh token")), 400
+
+    new_access_token = UserService.refresh_access_token(refresh_token)
+    if new_access_token:
+        return jsonify(create_response(True, "Token refreshed successfully", {"access_token": new_access_token})), 200
+
+    return jsonify(create_response(False, "Invalid refresh token")), 401
